@@ -1,30 +1,35 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shadow Gateway | Stealth Mode</title>
+    <title>Shadow Gateway | Bypass Console</title>
     <style>
-        body { background-color: #0d0211; color: #bc13fe; font-family: 'Courier New', Courier, monospace; text-align: center; margin: 0; overflow: hidden; }
-        .nav { background: #1a0225; padding: 10px; border-bottom: 2px solid #bc13fe; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
-        input { background: #000; border: 1px solid #bc13fe; color: #00ff00; padding: 8px; width: 40%; border-radius: 5px; outline: none; }
-        button { background: #bc13fe; color: white; border: none; padding: 8px 15px; cursor: pointer; font-weight: bold; border-radius: 5px; box-shadow: 0 0 10px #bc13fe; }
-        button:hover { background: white; color: #bc13fe; }
-        .exit-btn { background: transparent; border: 1px solid #444; color: #888; font-size: 11px; box-shadow: none; }
-        .exit-btn:hover { background: #ff0000; color: white; border-color: red; }
-        #frame-container { height: calc(100vh - 70px); width: 100%; background: white; }
+        body { background-color: #0a0a0a; color: #bc13fe; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; overflow: hidden; }
+        .nav { background: #150221; padding: 10px; border-bottom: 2px solid #bc13fe; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; box-shadow: 0 0 20px rgba(188, 19, 254, 0.3); }
+        input { background: #000; border: 1px solid #bc13fe; color: #00ff00; padding: 10px; width: 35%; border-radius: 5px; outline: none; font-family: monospace; }
+        button { background: #bc13fe; color: white; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 5px; transition: 0.3s; }
+        button:hover { background: white; color: #bc13fe; transform: scale(1.05); }
+        .engine-btn { background: #333; font-size: 11px; padding: 5px 10px; }
+        .exit-btn { background: #444; color: #eee; font-size: 11px; }
+        .exit-btn:hover { background: red; }
+        #frame-container { height: calc(100vh - 85px); width: 100%; background: #fff; }
         iframe { width: 100%; height: 100%; border: none; }
-        .status { font-size: 11px; color: #888; width: 100%; margin-top: 5px; }
+        .info { font-size: 10px; color: #666; width: 100%; text-align: center; margin-top: 2px; }
     </style>
 </head>
 <body>
 
     <div class="nav">
-        <strong style="cursor:pointer" onclick="goToBase()">[ SHADOW GATEWAY ]</strong>
-        <input type="text" id="urlInput" placeholder="Enter URL (e.g. tiktok.com)">
-        <button onclick="launch()">OPEN TUNNEL</button>
-        <button class="exit-btn" onclick="goToBase()">RETURN TO BASE [ESC]</button>
-        <div class="status">Status: <span style="color: #00ff00;">ENCRYPTED & STEALTH ACTIVE</span></div>
+        <strong onclick="location.href='https://dannekz.github.io/DD1_JR/'" style="cursor:pointer"> [ SHADOW SYSTEM ] </strong>
+        
+        <input type="text" id="urlInput" placeholder="اكتب الموقع هنا (مثلاً tiktok.com)">
+        
+        <button onclick="launch('google')">تشغيل (نفق 1)</button>
+        <button class="engine-btn" onclick="launch('codetabs')">نفق 2 (احتياطي)</button>
+        <button class="exit-btn" onclick="goToBase()">خروج [ESC]</button>
+        
+        <div class="info">نصيحة: إذا لم يعمل الموقع، جرب "نفق 2" أو اكتب m.tiktok.com</div>
     </div>
 
     <div id="frame-container">
@@ -32,40 +37,36 @@
     </div>
 
     <script>
-        // وظيفة تشغيل البروكسي
-        function launch() {
+        function launch(engine) {
             let target = document.getElementById('urlInput').value;
-            if (!target) return alert("Enter URL!");
+            if (!target) return alert("الرجاء إدخال رابط!");
+
+            // تنظيف الرابط من أي إضافات قديمة
+            target = target.replace('https://', '').replace('http://', '');
             
-            // إضافة البروتوكول تلقائياً إذا نسيه المستخدم
-            if (!target.startsWith('http')) {
-                target = 'https://' + target;
+            let finalUrl = "";
+            let frame = document.getElementById('proxyFrame');
+
+            if (engine === 'google') {
+                // المحرك الأول: مترجم جوجل (الأفضل لتيك توك)
+                finalUrl = "https://translate.google.com/translate?sl=en&tl=ar&u=https://" + target;
+            } else {
+                // المحرك الثاني: بروكسي تعليمي (للمواقع الأخف)
+                finalUrl = "https://api.codetabs.com/v1/proxy?quest=https://" + target;
             }
 
-            // محرك البروكسي (استخدمنا AllOrigins لأنه يدعم فك شفرات أكثر)
-            const proxyEngine = "https://api.allorigins.win/raw?url="; 
-            
-            let frame = document.getElementById('proxyFrame');
-            frame.src = proxyEngine + encodeURIComponent(target);
+            frame.src = finalUrl;
+            console.log("Launching Tunnel via: " + engine);
         }
 
-        // وظيفة العودة للموقع الرسمي
         function goToBase() {
             window.location.href = "https://dannekz.github.io/DD1_JR/";
         }
 
-        // تفعيل زر الـ ESC للهروب السريع
+        // اختصارات الكيبورد
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                goToBase();
-            }
-        });
-
-        // السماح بالضغط على Enter في خانة الإدخال لتشغيل البروكسي
-        document.getElementById('urlInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                launch();
-            }
+            if (e.key === 'Escape') goToBase(); // زر الهروب
+            if (e.key === 'Enter') launch('google'); // زر الإدخال
         });
     </script>
 </body>
