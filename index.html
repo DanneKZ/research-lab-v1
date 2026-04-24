@@ -29,10 +29,20 @@
     </div>
 
     <script>
-        function launch() {
-            let target = document.getElementById('urlInput').value;
-            if (!target) return alert("Enter a URL first!");
-            if (!target.startsWith('http')) target = 'https://' + target;
+function launch() {
+    let target = document.getElementById('urlInput').value;
+    if (!target) return alert("Enter URL!");
+    
+    // تصحيح الرابط تلقائياً
+    if (!target.startsWith('http')) target = 'https://' + target;
+
+    // محرك بروكسي بديل لتجنب كود تيك توك المعقد
+    const proxyEngine = "https://api.allorigins.win/raw?url="; 
+    
+    let frame = document.getElementById('proxyFrame');
+    frame.src = proxyEngine + encodeURIComponent(target);
+    frame.style.display = "block";
+}
 
             // هذه هي "الخدعة": نستخدم محرك بحث بروكسي مفتوح لا يحظره أحد
             // سنستخدم محرك بحث Google المشفر كممر
