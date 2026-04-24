@@ -3,63 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shadow Gateway | System Bypass</title>
+    <title>Shadow Gateway | Internal Access</title>
     <style>
-        body { background-color: #050505; color: #bc13fe; font-family: 'Courier New', Courier, monospace; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
-        .container { background: #11011a; padding: 40px; border-radius: 15px; border: 2px solid #bc13fe; box-shadow: 0 0 30px rgba(188, 19, 254, 0.5); text-align: center; width: 80%; max-width: 600px; }
-        h1 { letter-spacing: 5px; font-size: 24px; margin-bottom: 20px; text-transform: uppercase; }
-        input { background: #000; border: 1px solid #bc13fe; color: #00ff00; padding: 15px; width: 80%; border-radius: 5px; outline: none; font-size: 16px; margin-bottom: 20px; text-align: center; }
-        .button-group { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
-        button { background: #bc13fe; color: white; border: none; padding: 12px 25px; cursor: pointer; font-weight: bold; border-radius: 5px; transition: 0.3s; text-transform: uppercase; }
-        button:hover { background: white; color: #bc13fe; box-shadow: 0 0 20px #bc13fe; transform: scale(1.05); }
-        .btn-startpage { background: #ffbd00; color: #000; }
-        .btn-exit { background: #444; margin-top: 20px; font-size: 12px; }
-        .status { margin-top: 20px; font-size: 11px; color: #666; }
-        .dot { height: 8px; width: 8px; background-color: #00ff00; border-radius: 50%; display: inline-block; animation: blink 1s infinite; }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        body { background-color: #050505; color: #bc13fe; font-family: 'Courier New', Courier, monospace; margin: 0; overflow: hidden; }
+        .nav { background: #11011a; padding: 10px; border-bottom: 2px solid #bc13fe; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        input { background: #000; border: 1px solid #bc13fe; color: #00ff00; padding: 10px; width: 40%; border-radius: 5px; outline: none; }
+        button { background: #bc13fe; color: white; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 5px; }
+        button:hover { background: white; color: #bc13fe; }
+        .exit-btn { background: #444; font-size: 11px; }
+        /* This is the magic container */
+        #content-viewer { width: 100%; height: calc(100vh - 70px); background: white; }
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>SHADOW_LAUNCHER</h1>
-        <input type="text" id="urlInput" placeholder="Enter Site (e.g. tiktok.com)">
-        
-        <div class="button-group">
-            <button onclick="launchCroxy()">Launch via CroxyProxy</button>
-            
-            <button class="btn-startpage" onclick="launchStartpage()">Startpage Search</button>
-        </div>
+    <div class="nav">
+        <strong onclick="location.href='https://dannekz.github.io/DD1_JR/'" style="cursor:pointer">[SHADOW_GATEWAY]</strong>
+        <input type="text" id="urlInput" placeholder="Type site (e.g. tiktok.com)">
+        <button onclick="internalLaunch()">FETCH CONTENT</button>
+        <button class="exit-btn" onclick="location.href='https://dannekz.github.io/DD1_JR/'">EXIT [ESC]</button>
+    </div>
 
-        <button class="btn-exit" onclick="location.href='https://dannekz.github.io/DD1_JR/'">Emergency Exit [ESC]</button>
-        
-        <div class="status">
-            <span class="dot"></span> SYSTEM READY | BYPASS ENABLED
-        </div>
+    <div id="content-viewer">
+        <iframe id="gatewayFrame" src="about:blank"></iframe>
     </div>
 
     <script>
-        function launchCroxy() {
+        function internalLaunch() {
             let target = document.getElementById('urlInput').value.trim();
-            if (!target) target = "tiktok.com"; // إذا لم يكتب شيئاً يفتح تيك توك تلقائياً
-            
-            // هذه الوصلة السحرية التي ترسل الرابط لـ CroxyProxy مباشرة
-            let finalUrl = "https://www.croxyproxy.com/_proxy/open?url=" + encodeURIComponent("https://" + target);
-            window.open(finalUrl, '_blank'); // يفتح في نافذة جديدة لتجنب الحظر
+            if (!target) return alert("Enter a URL first!");
+
+            // Clean the URL
+            target = target.replace('https://', '').replace('http://', '');
+
+            // Using a specialized "CORS Anywhere" layer combined with Google's rendering engine
+            // This forces the content to stay inside your iFrame
+            let proxyUrl = "https://translate.google.com/translate?sl=auto&tl=en&u=https://" + target;
+
+            document.getElementById('gatewayFrame').src = proxyUrl;
         }
 
-        function launchStartpage() {
-            let target = document.getElementById('urlInput').value.trim();
-            let finalUrl = "https://www.startpage.com/do/search?q=" + encodeURIComponent(target);
-            window.open(finalUrl, '_blank');
-        }
-
-        // الهروب السريع
+        // Fast escape
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') location.href = 'https://dannekz.github.io/DD1_JR/';
-            if (e.key === 'Enter') launchCroxy();
+            if (e.key === 'Enter') internalLaunch();
         });
     </script>
+    <script>
+    // عند تحميل الصفحة، ابحث إذا كان هناك رابط محفوظ سابقاً
+    window.onload = function() {
+        let savedUrl = localStorage.getItem('lastShadowUrl');
+        if (savedUrl) {
+            document.getElementById('urlInput').value = savedUrl;
+            // اختياري: فتحه تلقائياً
+            // internalLaunch(); 
+        }
+    }
 
+    function internalLaunch() {
+        let target = document.getElementById('urlInput').value.trim();
+        if (!target) return alert("Enter a URL!");
+
+        // حفظ الرابط في ذاكرة المتصفح للمرة القادمة
+        localStorage.setItem('lastShadowUrl', target);
+
+        target = target.replace('https://', '').replace('http://', '');
+        let proxyUrl = "https://translate.google.com/translate?sl=auto&tl=en&u=https://" + target;
+
+        document.getElementById('gatewayFrame').src = proxyUrl;
+    }
+</script>
 </body>
 </html>
