@@ -53,6 +53,19 @@ function launch() {
 
             document.getElementById('proxyFrame').src = alternativeProxy;
         }
+        <button onclick="window.location.href='https://dannekz.github.io/DD1_JR/'" 
+        style="background: transparent; border: 1px solid #444; color: #888; padding: 5px 10px; cursor: pointer; font-size: 10px; border-radius: 5px; margin-top: 10px;">
+    RETURN TO BASE [ESC]
+</button>
+
+<script>
+    // لمسة الهكر: إذا ضغطوا على زر ESC في الكيبورد يخرج فوراً للموقع الرسمي
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            window.location.href = "https://dannekz.github.io/DD1_JR/";
+        }
+    });
+</script>
     </script>
 </body>
 </html>
